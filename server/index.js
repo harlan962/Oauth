@@ -26,8 +26,13 @@ if (!Number.isInteger(writeBudget) || writeBudget < 100 || writeBudget > 1000000
   throw new Error('ACCOUNT_DESK_API_WRITE_PER_MINUTE 须为 100–1000000 的整数（每分钟可写入的账号条数）');
 const releaseLock = acquireRuntimeLock(directory);
 const store = new Store(directory);
+// Docker/反向代理部署时通过 ACCOUNT_DESK_HOST 绑定 0.0.0.0，
+// 并用 ACCOUNT_DESK_EXTRA_HOSTS（逗号分隔，如 "myhost:4318,app.example.com"）扩展 Host 白名单。
+const bindHost = process.env.ACCOUNT_DESK_HOST || "127.0.0.1";
+const extraHosts = (process.env.ACCOUNT_DESK_EXTRA_HOSTS || "")
+  .split(",").map(h => h.trim()).filter(Boolean);
 const { app, publicApp, access, auth, checker, integrations, workbuddy, pat, schedule, bot } = createApp(store, {
-  allowedHosts: [`127.0.0.1:${port}`, `localhost:${port}`],
+  allowedHosts: [`127.0.0.1:${port}`, `localhost:${port}`, ...extraHosts],
   devHosts: devMode,
   trustProxy,
   adminAllow,
@@ -39,12 +44,12 @@ const receiptCleanup = setInterval(()=>{try {access.cleanup();auth.cleanup();} c
 receiptCleanup.unref();
 let listening = 0;
 const ready = () => { if (++listening===2) { schedule.start(); bot.start(); } };
-const server = app.listen(port, "127.0.0.1", () => {
-  console.log(`GitHub 账号工作台：http://127.0.0.1:${port}`);
+const server = app.listen(port, bindHost, () => {
+  console.log(`GitHub 账号工作台：http://${bindHost}:${port}`);
   ready();
 });
-const publicServer = publicApp.listen(apiPort,'127.0.0.1',()=>{
-  console.log(`对外 API（本机监听）：http://127.0.0.1:${apiPort}/api/v1`);
+const publicServer = publicApp.listen(apiPort, bindHost, () => {
+  console.log(`对外 API（${bindHost} 监听）：http://${bindHost}:${apiPort}/api/v1`);
   ready();
 });
 for (const listener of [server,publicServer]) listener.on("error", (error) => {

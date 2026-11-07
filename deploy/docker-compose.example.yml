@@ -1,0 +1,15 @@
+services:
+  github-account-desk:
+    image: ghcr.io/<你的GitHub用户名>/<仓库名>:latest   # 推送后 GitHub 会自动构建，改成你的实际路径
+    container_name: account-desk
+    restart: unless-stopped
+    ports:
+      - "4318:4318"   # 工作台 Web 界面
+      - "4319:4319"   # 对外 API
+    environment:
+      # 部署在域名或 IP 后面时，把实际访问的 Host 加进白名单（逗号分隔）
+      ACCOUNT_DESK_EXTRA_HOSTS: "your-domain.com:4318"
+      # 如需信任反向代理头（nginx/caddy）取真实 IP，改为 1
+      ACCOUNT_DESK_TRUST_PROXY: "0"
+    volumes:
+      - ./data:/app/data   # SQLite 数据持久化
