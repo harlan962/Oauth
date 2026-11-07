@@ -1,0 +1,64 @@
+{
+  "failedAccount": "thurman-rush88",
+  "successfulControl": "lamont-roan82",
+  "browser": "Chromium 156.0.8078.4",
+  "proxy": "Same system proxy configuration; public exit IP not measured",
+  "failed": [
+    {
+      "timeUTC": "2026-10-19T08:20:18.164Z",
+      "stage": "request",
+      "endpoint": "https://www.workbuddy.ai/console/auth/risk-context",
+      "method": "POST",
+      "deviceTokenPresent": true,
+      "deviceTokenErrorPresent": false,
+      "deviceTokenError": null
+    },
+    {
+      "timeUTC": "2026-10-19T08:20:18.460Z",
+      "stage": "response",
+      "endpoint": "https://www.workbuddy.ai/console/auth/risk-context",
+      "method": "POST",
+      "http": 200,
+      "code": 0,
+      "requestId": "f026d426-3a3c-433a-a279-ed984c01120d"
+    },
+    {
+      "timeUTC": "2026-10-19T08:20:39.623Z",
+      "stage": "response",
+      "endpoint": "https://www.workbuddy.ai/auth/realms/copilot/login-actions/first-broker-login",
+      "method": "GET",
+      "http": 403,
+      "requestId": "98367b3c-a589-4862-806c-0b5e90d02b4e"
+    }
+  ],
+  "successful": [
+    {
+      "timeUTC": "2026-10-19T07:39:51.555Z",
+      "stage": "response",
+      "endpoint": "https://www.workbuddy.ai/auth/realms/copilot/login-actions/post-broker-login",
+      "method": "GET",
+      "http": 302,
+      "requestId": "adfed58f-97ad-4626-97ca-c058846d6a9f"
+    },
+    {
+      "timeUTC": "2026-10-19T07:39:55.436Z",
+      "stage": "response",
+      "endpoint": "https://www.workbuddy.ai/console/accounts",
+      "method": "GET",
+      "http": 200,
+      "code": 0,
+      "requestId": "2b628cd7-a790-4913-9c52-d88efcdf2803",
+      "existingUidMatched": true
+    },
+    {
+      "timeUTC": "2026-10-19T07:40:13.790Z",
+      "stage": "response",
+      "endpoint": "https://www.workbuddy.ai/console/accounts",
+      "method": "GET",
+      "http": 200,
+      "code": 0,
+      "requestId": "7a1f6cd1-98d4-47e2-a46d-71fce151621c",
+      "existingUidMatched": true
+    }
+  ]
+}

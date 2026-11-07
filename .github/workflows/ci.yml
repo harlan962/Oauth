@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  # Browser tests are opt-in: they need a downloaded Chromium and real page
+  # interaction, so they run on demand instead of blocking every push.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint, build, unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          # node:sqlite is still experimental and needs a recent 22.x.
+          node-version: "22.15.0"
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - name: Unit tests (no browser)
+        run: npm run test:unit
+        env:
+          # Each admin fixture runs a 128 MB scrypt hash; keep peak memory sane.
+          TEST_BATCH_SIZE: "3"
+
+  browser:
+    name: Browser tests
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.15.0"
+          cache: npm
+      - run: npm ci
+      - run: npm run browser:install
+      - run: npm run build
+      - run: npm run test:browser

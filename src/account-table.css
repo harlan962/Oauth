@@ -1,0 +1,71 @@
+.account-categories.tabs { flex-wrap:wrap; }
+.totp-state { padding:4px 7px; border-radius:5px; background:#fff4df; color:#885b0e; }
+.totp-state.enabled { background:#e9f6f2; color:#246f5a; }
+.account-panel .configurable-table table { min-width:1040px; }
+.configurable-table td[data-column="identity"] { min-width:190px; }
+.configurable-table td[data-column="tags"] { min-width:110px; max-width:230px; }
+.configurable-table td[data-column="group"] { min-width:90px; max-width:150px; }
+.configurable-table td[data-column="totp"] { min-width:80px; }
+.configurable-table td[data-column="actions"] { min-width:146px; }
+.account-time { display:block; font-family:Consolas,'Microsoft YaHei',monospace; font-size:12px; font-variant-numeric:tabular-nums; color:#5e6b80; white-space:nowrap; }
+.standalone-tags { margin:0; align-items:center; }
+.more-tags summary { font-size:11px; color:var(--blue); cursor:pointer; padding:3px 6px; border-radius:4px; background:var(--blue-bg); list-style:none; }
+.more-tags summary::-webkit-details-marker { display:none; }
+.more-tags[open] { flex-basis:100%; }
+.more-tags[open] > div { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+.more-tags[open] > summary { display:inline-block; }
+.add-tag { font-size:12px; color:var(--muted); }
+.table-notes { min-width:100px; max-width:220px; font-size:12px; overflow-wrap:anywhere; }
+.table-notes summary { cursor:pointer; color:var(--muted); }
+.table-notes p { margin:8px 0 0; white-space:pre-wrap; }
+.table-notes-plain { white-space:pre-wrap; }
+.table-notes-collapse,.table-notes[open] .table-notes-preview { display:none; }
+.table-notes[open] .table-notes-collapse { display:inline; }
+.task-cell { display:flex; flex-direction:column; align-items:flex-start; gap:5px; min-width:92px; }
+.task-cell .text-button { font-size:11px; }
+.task-state { font-size:12px; padding:3px 7px; background:#edf0f4; color:#5b677a; border-radius:5px; white-space:nowrap; }
+.task-linked,.task-external,.task-valid,.task-success { background:#e9f6f2; color:#246f5a; }
+.task-queued,.task-preparing,.task-running,.task-browser,.task-polling { background:#edf1ff; color:#3559d5; }
+.task-manual,.task-cooling,.task-verifying,.task-unknown,.task-restricted { background:#fff4df; color:#916214; }
+.task-invalid,.task-failed { background:#fbeef1; color:#ac4861; }
+.task-conflict { color:#916214; font-size:11px; max-width:150px; }
+.candidate-reason { display:block; font-size:12px; color:var(--muted); margin-top:5px; max-width:230px; overflow-wrap:anywhere; }
+.column-settings { width:min(580px,calc(100vw - 32px)); }
+.column-settings-help { font-size:12px; color:var(--muted); line-height:1.7; margin-bottom:20px; }
+.column-settings-group { padding:0; margin:0 0 20px; border:0; min-width:0; }
+.column-settings-group:last-child { margin-bottom:0; }
+.column-settings-group legend { font-size:12px; font-weight:650; color:var(--muted); margin-bottom:9px; padding:0; }
+.column-settings-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+.column-settings-option { display:flex; align-items:center; gap:9px; min-height:40px; padding:9px 10px; background:#f8f9fb; border:1px solid var(--line); border-radius:6px; font-size:12px; cursor:pointer; line-height:1.5; }
+.column-settings-option:has(input:checked) { background:var(--blue-bg); border-color:#cad5f7; }
+.column-settings-option input { margin:0; flex-shrink:0; }
+.column-settings-fixed { cursor:default; color:var(--muted); }
+.column-settings-option small { margin-left:auto; font-size:11px; }
+.account-detail-times { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; font-size:12px; }
+.account-detail-times dt { color:var(--muted); margin-bottom:6px; }
+.account-detail-times dd { margin:0; font-variant-numeric:tabular-nums; }
+.task-links h4 { margin:18px 0 10px; font-size:12px; }
+.task-links p { display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; font-size:12px; border-top:1px solid var(--line); padding-top:9px; }
+.task-links time { color:var(--muted); font-variant-numeric:tabular-nums; }
+.wb-results { border:1px solid var(--line); border-radius:9px; padding:16px; background:#fff; margin:16px 0; }
+.wb-results .section-heading { padding:0; margin-bottom:12px; flex-wrap:wrap; gap:10px; }
+.wb-results h2 { font-size:15px; margin:0; }
+.wb-results .section-heading label { margin-left:auto; font-size:12px; display:flex; align-items:center; gap:8px; }
+.wb-results select { padding:7px; border:1px solid var(--line); border-radius:5px; background:#fff; }
+.wb-result-list { max-height:400px; overflow:auto; }
+.wb-result-row { display:grid; grid-template-columns:1fr auto; align-items:center; gap:7px 12px; padding:12px 0; border-top:1px solid var(--line); font-size:12px; }
+.wb-result-row strong { overflow-wrap:anywhere; }
+.wb-result-row p { margin:0; color:var(--muted); line-height:1.6; overflow-wrap:anywhere; }
+.wb-result-row small { color:var(--muted); font-size:11px; text-align:right; }
+@media (max-width:700px) {
+  .account-categories.tabs { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .account-categories .tab { font-size:11px; gap:4px; }.account-categories .tab span { padding-inline:4px; }
+  .account-panel .configurable-table table { min-width:0; }.configurable-table td[data-column] { min-width:0; max-width:none; }
+  .configurable-table td[data-column="tags"],.configurable-table td[data-column="notes"] { grid-column:1 / -1; }
+  .configurable-table td[data-column="identity"] { min-width:0; }
+  .configurable-table td[data-column="actions"] { min-width:0; }
+  .configurable-table .account-time { white-space:normal; font-size:11px; line-height:1.6; }
+  .column-settings-options { grid-template-columns:1fr; }.column-settings-option { min-height:44px; }.column-settings-group { margin-bottom:16px; }
+  .account-detail-times { grid-template-columns:1fr; }.more-tags summary { min-height:40px; display:flex; align-items:center; }.candidate-reason { max-width:none; }
+  .wb-results { padding:12px; }.wb-results .section-heading label { margin:0; width:100%; }.wb-results select { flex:1; min-height:42px; min-width:0; }.wb-result-row { grid-template-columns:minmax(0,1fr) auto; }.wb-result-row p { grid-column:1/-1; }.wb-result-row small { grid-column:1/-1; text-align:left; }
+}

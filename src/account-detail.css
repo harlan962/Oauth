@@ -1,0 +1,88 @@
+/* A compact reading order: credentials, public check, organization, ownership. */
+.modal.account-modal { width:min(760px,calc(100vw - 32px)); }
+.account-modal .account-overview { padding-bottom:14px; margin-bottom:16px; gap:12px; }
+.account-modal .detail-identity { min-width:0; gap:10px; }
+.account-modal .detail-identity > div:last-child { min-width:0; }
+.account-modal .account-overview .avatar.large { width:36px; height:36px; flex:0 0 36px; font-size:13px; border-radius:8px; }
+.account-modal .account-overview .detail-identity h3 { font-size:17px; line-height:1.35; margin:0 0 4px; }
+.account-modal .detail-identity a { font-size:12px; }
+.account-modal .section-label { margin-bottom:10px; gap:10px; }
+.account-modal .section-label > span { font-size:11px; }
+.account-modal .editor-grid { gap:12px 16px; }
+.account-modal .editable-field > label { margin-bottom:6px; }
+.account-modal .field-title { min-height:18px; margin-bottom:6px; }
+.account-modal .input-actions { min-height:40px; border-color:var(--line); background:var(--bg); }
+.account-modal .input-actions input { padding:10px; font-size:13px; }
+.account-modal .input-actions .icon-button { width:32px; min-height:36px; flex:0 0 32px; }
+.account-modal .input-actions:focus-within { border-color:#c4ccd7; box-shadow:none; }
+:root[data-input-method="keyboard"] .account-modal .input-actions:has(input:focus-visible) { outline:2px solid var(--muted); outline-offset:2px; }
+.account-modal .detail-otp { display:flex; align-items:center; gap:12px; margin-top:12px; padding:8px 12px; min-height:48px; background:var(--bg); border:1px solid var(--line); border-radius:6px; }
+.account-modal .detail-otp .section-label { display:contents; }
+.account-modal .detail-otp h3 { font-size:12px; white-space:nowrap; }
+.account-modal .detail-otp .text-button { order:3; margin-left:auto; font-size:12px; min-height:30px; white-space:nowrap; }
+.account-modal .detail-otp > p { margin:0; font-size:12px; }
+.account-modal .detail-otp .otp { display:flex; align-items:center; gap:10px; padding:0; margin:0; background:none; border:0; flex:1; }
+.account-modal .detail-otp .otp strong { font-family:Consolas,monospace; font-size:21px; letter-spacing:2px; color:var(--text); }
+.account-modal .detail-otp .otp span { font-size:12px; white-space:nowrap; color:var(--muted); }
+.account-modal .detail-otp .icon-button { width:32px; min-height:32px; }
+.account-modal .detail-secondary { display:grid; gap:16px; margin-top:16px; }
+.account-modal .detail-check { border-block:1px solid var(--line); padding:12px 0; }
+.account-modal .detail-check-summary { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.account-modal .detail-check-title { display:flex; align-items:center; gap:8px; }
+.account-modal .detail-check-title > svg { color:var(--muted); }
+.account-modal .detail-check h3,.account-modal .detail-task h3 { font-size:13px; font-weight:650; margin:0; }
+.account-modal .detail-check-summary > small { font-size:11px; color:var(--muted); margin-left:auto; font-variant-numeric:tabular-nums; }
+.account-modal .small-button { min-height:32px; padding:6px 9px; font-size:12px; gap:5px; }
+.account-modal .detail-check-message { color:var(--muted); font-size:12px; line-height:1.6; margin:6px 0 0; overflow-wrap:anywhere; }
+.account-modal .detail-metadata { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; }
+.account-modal .detail-metadata.without-notes { grid-template-columns:1fr; }
+.account-modal .account-organization-detail { grid-column:auto; }
+.account-modal .detail-classification { display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:12px; }
+.account-modal .detail-group { color:var(--muted); margin-right:4px; overflow-wrap:anywhere; }
+.account-modal .detail-classification .user-tag { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+.account-modal .detail-notes { min-width:0; }
+.account-modal .readonly-notes { margin:10px 0 0; font-size:12px; line-height:1.7; }
+.account-modal .detail-notes .field { margin-top:10px; }
+.account-modal .detail-task { border-top:1px solid var(--line); margin-top:16px; padding-top:12px; }
+.account-modal .detail-task-main,.account-modal .detail-task-identity,.account-modal .detail-task-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.account-modal .detail-task-main { justify-content:space-between; }
+.account-modal .detail-task-identity { min-width:0; font-size:12px; }
+.account-modal .detail-task-identity strong { font-size:12px; font-weight:500; }
+.account-modal .detail-task-identity > span { color:var(--muted); }
+.account-modal .detail-task-actions .text-button { font-size:12px; }
+.account-modal .detail-task-description,.account-modal .detail-workbuddy-result { margin:8px 0 0; font-size:12px; color:var(--muted); line-height:1.7; overflow-wrap:anywhere; }
+.account-modal .detail-workbuddy-result strong { font-weight:500; color:var(--text); }
+.account-modal .detail-workbuddy-result p { margin:3px 0 0; }
+.account-modal .detail-times { display:flex; gap:6px 16px; flex-wrap:wrap; margin-top:10px; color:var(--muted); font-size:11px; line-height:1.6; font-variant-numeric:tabular-nums; }
+.account-modal .detail-timezone { margin-left:auto; }
+.account-modal .pat-detail { border-top:1px solid var(--line); padding-top:14px; }
+.account-modal .pat-metadata { gap:10px 16px; margin:12px 0; }
+.account-modal .dialog-feedback { padding:8px 20px; min-height:0; font-size:12px; }
+.account-modal .dialog-feedback[hidden] { display:none; }
+.account-modal .modal-footer > .danger-quiet { margin-right:auto; }
+@media (max-width:700px) {
+  .modal.account-modal { width:calc(100vw - 24px); }
+  .account-modal .account-overview { gap:10px; }
+  .account-modal .section-label { flex-wrap:wrap; gap:4px 10px; }
+  .account-modal .section-label > span { font-size:11px; }
+  .account-modal .editor-grid { gap:12px; }
+  .account-modal .input-actions { min-height:44px; padding-right:2px; }
+  .account-modal .input-actions input { font-size:16px; padding:10px; }
+  .account-modal .input-actions .icon-button { flex-basis:44px; width:44px; min-height:44px; }
+  .account-modal .field-title .text-button { min-height:36px; font-size:12px; }
+  .account-modal .detail-otp { flex-wrap:wrap; gap:8px; padding:8px 10px; }
+  .account-modal .detail-otp .text-button { min-height:44px; }
+  .account-modal .detail-otp > p { flex-basis:100%; order:4; }
+  .account-modal .detail-otp .otp { order:4; flex-basis:100%; }
+  .account-modal .detail-otp .otp .icon-button { margin-left:auto; width:44px; min-height:44px; }
+  .account-modal .detail-check-summary { gap:8px; }
+  .account-modal .detail-check-title { flex-wrap:wrap; flex-basis:100%; }
+  .account-modal .detail-check-summary > small { margin:0; flex:1; line-height:1.6; }
+  .account-modal .small-button,.account-modal .detail-task-actions .text-button,.account-modal .account-organization-detail .text-button { min-height:44px; }
+  .account-modal .detail-metadata { grid-template-columns:1fr; gap:16px; }
+  .account-modal .detail-notes textarea { font-size:16px; }
+  .account-modal .detail-task-actions { gap:8px; }
+  .account-modal .detail-times { gap:6px 10px; }
+  .account-modal .detail-timezone { margin-left:0; }
+  .account-modal .dialog-feedback { padding:8px 16px; }
+}

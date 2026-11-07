@@ -1,0 +1,16 @@
+# Use the same HTTPS origin for both environment variables:
+# ACCOUNT_DESK_ADMIN_ORIGIN=https://www.abc.com
+# ACCOUNT_DESK_API_ORIGIN=https://www.abc.com
+# Caddy preserves the original Host. Do not rewrite it to localhost.
+www.abc.com {
+    @public_api path /api/v1/*
+    handle @public_api {
+        request_body {
+            max_size 2MB
+        }
+        reverse_proxy 127.0.0.1:4319
+    }
+    handle {
+        reverse_proxy 127.0.0.1:4318
+    }
+}

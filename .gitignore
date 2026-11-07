@@ -1,0 +1,12 @@
+node_modules/
+dist/
+data/
+output/
+backups/
+*.log
+*.tsbuildinfo
+.env
+.playwright-cli/
+.local-browsers/
+.superpowers/
+.workbuddy/

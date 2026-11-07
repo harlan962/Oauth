@@ -1,0 +1,14 @@
+# Replace this hostname AND set ACCOUNT_DESK_API_ORIGIN=https://api.example.com
+# Only the API listener is used here. Never proxy to the private UI on 4318.
+api.example.com {
+    @public_api path /api/v1/*
+    handle @public_api {
+        request_body {
+            max_size 2MB
+        }
+        reverse_proxy 127.0.0.1:4319
+    }
+    handle {
+        respond 404
+    }
+}

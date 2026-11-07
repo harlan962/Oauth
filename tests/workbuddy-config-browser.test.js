@@ -1,0 +1,113 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync, mkdirSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { createServer } from 'node:http';
+import { Store } from '../server/store.js';
+import { createApp } from './authenticated-app.js';
+import { chromium } from '../server/browser-runtime.js';
+
+test('single WorkBuddy config saves, preserves secrets, diagnoses both networks and fits mobile', {timeout:90000}, async t => {
+  const directory=mkdtempSync(join(tmpdir(),'wb-config-ui-'));
+  const store=new Store(directory);
+  const server=createServer().listen(0,'127.0.0.1');
+  await new Promise(r=>server.once('listening',r));
+  const origin=`http://127.0.0.1:${server.address().port}`;
+  let failApi=false, failBrowser=false, browser, launches=[];
+  const services=createApp(store,{
+    allowedHosts:[new URL(origin).host],
+    integrationFetcher:async()=>{if(failApi)throw new Error('private upstream error');return Response.json({accounts:[],total:4});},
+    integrationBrowserExists:()=>true,
+    integrationChromium:{executablePath:()=>process.execPath,launch:async options=>{
+      launches.push(options);
+      return {close:async()=>{},newContext:async()=>({route:async()=>{},newPage:async()=>({goto:async url=>({url:()=>url,status:()=>failBrowser?407:200})})})};
+    }},
+  });
+  server.on('request',services.app);
+  t.after(async()=>{await browser?.close();await Promise.all([services.checker.cancel(),services.pat.stop(),services.workbuddy.stop()]);await services.integrations.stop();server.closeAllConnections();await new Promise(r=>server.close(r));store.close();rmSync(directory,{recursive:true,force:true});});
+  browser=await chromium.launch({headless:true,executablePath:chromium.executablePath()});
+  const page=await browser.newPage({viewport:{width:1440,height:1000}});
+  page.setDefaultTimeout(10000);
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto(origin);
+  await page.getByRole('navigation',{name:'主导航'}).getByRole('button',{name:/WorkBuddy2api/i}).click();
+  await page.getByRole('button',{name:'配置',exact:true}).click();
+  const dialog=page.getByRole('dialog',{name:'WorkBuddy2api 配置',exact:true});
+  assert.equal(await dialog.getByLabel('配置名称').count(),0);
+  assert.equal(await dialog.getByRole('button',{name:'测试连接',exact:true}).isDisabled(),true);
+  await dialog.getByLabel('部署地址',{exact:true}).fill('https://example.test/panel/');
+  await dialog.getByLabel('API Key',{exact:true}).fill('fixture-api-key');
+  await dialog.getByRole('button',{name:'保存配置',exact:true}).click();
+  await dialog.getByText('配置已保存',{exact:true}).waitFor();
+  const id=services.integrations.targets()[0].id;
+  assert.equal(services.integrations.targets()[0].baseUrl,'https://example.test');
+  assert.equal(await dialog.getByLabel('API Key',{exact:true}).inputValue(),'');
+  await dialog.getByRole('button',{name:'测试连接',exact:true}).click();
+  await dialog.getByText('部署接口 · 正常',{exact:true}).waitFor();
+  await dialog.getByText('直连网络 · 正常',{exact:true}).waitFor();
+  assert.ok(launches.at(-1).args.includes('--no-proxy-server'));
+  await dialog.getByLabel('连接方式',{exact:true}).selectOption('proxy');
+  assert.equal(await dialog.getByLabel('连接测试结果').count(),0);
+  assert.equal(await dialog.getByRole('button',{name:'测试连接',exact:true}).isDisabled(),true);
+  await dialog.getByLabel('代理链接',{exact:true}).fill('http://fixture-user:fixture-password@127.0.0.1:7890');
+  assert.equal(await dialog.getByLabel('代理需要认证',{exact:true}).count(),0);
+  await dialog.getByRole('button',{name:'保存配置',exact:true}).click();
+  await dialog.getByText('配置已保存',{exact:true}).waitFor();
+  assert.equal(services.integrations.targets().length,1);
+  assert.equal(services.integrations.targets()[0].id,id);
+  failApi=true;
+  await dialog.getByRole('button',{name:'测试连接',exact:true}).click();
+  await dialog.getByText('部署接口 · 失败',{exact:true}).waitFor();
+  await dialog.getByText('代理网络 · 正常',{exact:true}).waitFor();
+  assert.deepEqual(launches.at(-1).proxy,{server:'http://127.0.0.1:7890',username:'fixture-user',password:'fixture-password'});
+  failApi=false;failBrowser=true;
+  await dialog.getByRole('button',{name:'测试连接',exact:true}).click();
+  await dialog.getByText('部署接口 · 正常',{exact:true}).waitFor();
+  await dialog.getByText('代理网络 · 失败',{exact:true}).waitFor();
+  mkdirSync(resolve('output/playwright/workbuddy-clean'),{recursive:true});
+  await page.screenshot({path:resolve('output/playwright/workbuddy-clean/config-desktop.png')});
+  for(const width of [390,320]){
+    await page.setViewportSize({width,height:844});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    assert.equal(await dialog.evaluate(el=>el.scrollWidth<=el.clientWidth),true);
+    await page.screenshot({path:resolve(`output/playwright/workbuddy-clean/config-${width}.png`)});
+  }
+  await dialog.getByLabel('部署地址',{exact:true}).fill('https://changed.test');
+  assert.equal(await dialog.getByLabel('API Key',{exact:true}).getAttribute('required'),'');
+  await page.keyboard.press('Escape');
+  await page.screenshot({path:resolve('output/playwright/workbuddy-clean/discard-mobile.png'),animations:'disabled'});
+  await page.setViewportSize({width:1440,height:1000});
+  const confirmation=page.getByRole('alertdialog',{name:'放弃未保存的修改？'});
+  assert.ok((await confirmation.boundingBox()).height<220);
+  await page.screenshot({path:resolve('output/playwright/workbuddy-clean/discard-desktop.png'),animations:'disabled'});
+  await page.getByRole('button',{name:'继续编辑',exact:true}).click();
+  await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'放弃修改',exact:true}).click();
+  await page.getByRole('button',{name:'配置',exact:true}).click();
+  assert.equal(await dialog.getByLabel('部署地址',{exact:true}).inputValue(),'https://example.test');
+  assert.equal(await dialog.getByLabel('代理链接',{exact:true}).inputValue(),'');
+  await dialog.getByLabel('API Key',{exact:true}).fill('replacement-api-key');
+  await dialog.getByRole('button',{name:'保存配置',exact:true}).click();
+  await dialog.getByText('配置已保存',{exact:true}).waitFor();
+  assert.equal(services.integrations.browserProxy(services.integrations.target(id)).password,'fixture-password','editing other fields preserves saved proxy credentials');
+  await dialog.getByLabel('代理链接',{exact:true}).fill('socks5://fixture-user:fixture-password@127.0.0.1:1080');
+  await dialog.getByRole('button',{name:'保存配置',exact:true}).click();
+  await dialog.getByText('配置已保存',{exact:true}).waitFor();
+  assert.equal(services.integrations.targets()[0].browserProxy.hasPassword,true);
+  await dialog.getByLabel('代理链接',{exact:true}).fill('http://127.0.0.1:7890');
+  await dialog.getByRole('button',{name:'保存配置',exact:true}).click();
+  await dialog.getByText('配置已保存',{exact:true}).waitFor();
+  assert.equal(services.integrations.targets()[0].browserProxy.hasPassword,false);
+  await dialog.getByLabel('连接方式',{exact:true}).selectOption('direct');
+  await dialog.getByRole('button',{name:'保存配置',exact:true}).click();
+  await dialog.getByText('配置已保存',{exact:true}).waitFor();
+  assert.equal(services.integrations.targets()[0].browserProxy,null);
+  await page.keyboard.press('Escape');
+  assert.equal(await page.getByLabel('任务记录',{exact:true}).count(),0);
+  assert.equal(await page.getByRole('region',{name:'任务账号结果'}).count(),0);
+  assert.doesNotMatch(await page.locator('.wb-page-toolbar').innerText(),/https?:\/\//);
+  await page.setViewportSize({width:1440,height:1000});
+  await page.screenshot({path:resolve('output/playwright/workbuddy-clean/page-desktop.png')});
+  assert.deepEqual(errors,[]);
+});

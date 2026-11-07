@@ -1,0 +1,28 @@
+.modal.export-accounts { width:min(480px,calc(100vw - 32px)); }
+.export-ranges { border:0; padding:0; margin:0 0 18px; min-width:0; display:grid; gap:10px; }
+.export-ranges legend { padding:0; margin-bottom:10px; font-weight:600; font-size:13px; }
+.export-range { display:flex; align-items:center; gap:12px; min-height:76px; padding:14px; border:1px solid var(--line); border-radius:8px; cursor:pointer; transition:border-color 150ms,background-color 150ms; }
+.export-range.active { border-color:var(--blue); background:var(--blue-bg); }
+.export-range:hover:not(.unavailable) { border-color:var(--blue); }
+.export-range.unavailable { color:var(--muted); cursor:not-allowed; }
+.export-range input { flex:0 0 auto; width:16px; height:16px; accent-color:var(--blue); margin:0; }
+.export-range > span { min-width:0; flex:1; }
+.export-range strong,.export-range small { display:block; }
+.export-range strong { font-size:13px; font-weight:600; }
+.export-range small { color:var(--muted); font-size:12px; line-height:1.6; margin-top:4px; }
+.export-range b { flex-shrink:0; font-size:13px; font-variant-numeric:tabular-nums; }
+.export-format { display:flex; align-items:flex-start; gap:10px; padding:14px; background:var(--bg); border-radius:8px; }
+.export-format > svg,.export-notice > svg { flex-shrink:0; margin-top:2px; }
+.export-format > div { min-width:0; }
+.export-format strong { font-size:13px; }
+.export-format code { display:block; font-size:12px; line-height:1.8; margin-top:6px; overflow-wrap:anywhere; }
+.export-format p { margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.7; }
+.export-notice { display:flex; align-items:flex-start; gap:8px; margin:16px 0 0; color:var(--amber); font-size:12px; line-height:1.7; }
+.export-accounts .inline-error { margin:14px 0 0; }
+@media(max-width:700px) {
+  .export-range { padding:12px; gap:10px; }
+  .export-range b { font-size:12px; }
+  .heading-actions { flex-wrap:wrap; }
+  .heading-actions .button { min-height:44px; }
+}
+@media(prefers-reduced-motion:reduce) { .export-range { transition:none; } }
